@@ -1,0 +1,104 @@
+题目描述
+写一个Node2D基类，属性有位置location(string)
+一个Body子类继承自Node2D，属性当前生命值health（int），防御力defense（int）
+一个Weapon子类也继承自Node2D，属性有武器名w_name（string），伤害damage（int）
+一个Player多继承自Body和Weapon，属性有名字name（string）。方法有attack，对目标造成伤害
+在主函数创建两个Player，p1、p2，判断在p1首先开始攻击的情况下谁会获胜。
+我们规定attack中，每次对目标生命力造成的伤害等于damage减去目标的defense。
+输入
+地点location,玩家1的名字、生命值、防御力、武器名、武器伤害，玩家2的名字、生命值、防御力、武器名、武器伤害
+输出
+输出：获胜信息
+------------------------------
+输入样例1
+palace
+p1 30 5 bow 30
+p2 50 10 sword 20
+输出样例1
+p1 deal 20 damage to p2
+p2 still have 30 health
+
+p2 deal 15 damage to p1
+p1 still have 15 health
+
+p1 deal 20 damage to p2
+p2 still have 10 health
+
+p2 deal 15 damage to p1
+p2 defeated p1 by sword in palace
+语言: 
+C++
+---------------------------------
+AC代码：
+#include "bits/stdc++.h"
+using namespace std;
+
+class Node2D {
+protected:
+    string location;
+public:
+    Node2D(string loc) : location(loc) {}
+};
+
+class Body : virtual public Node2D {
+private:
+    int health;
+    int defense;
+public:
+    Body(string loc, int h, int d) : Node2D(loc), health(h), defense(d) {}
+
+    int getHealth() const { return health; }
+    void setHealth(int h) { health = h; }
+    int getDefense() const { return defense; }
+};
+class Weapon : virtual public Node2D {
+protected:
+    string w_name;
+    int damage;
+public:
+    Weapon(string loc, string name, int dmg) : Node2D(loc), w_name(name), damage(dmg) {}
+};
+
+class Player : public Body, public Weapon {
+private:
+    string name;
+public:
+    Player(string loc, string n, int h, int d, string wn, int dmg)
+            : Node2D(loc), Body(loc, h, d), Weapon(loc, wn, dmg), name(n) {}
+
+    void attack(Player &target) {
+        int actual_damage = damage - target.getDefense();
+        actual_damage = actual_damage > 0 ? actual_damage : 0;
+        target.setHealth(target.getHealth() - actual_damage);
+        cout << name << " deal " << actual_damage << " damage to " << target.name << endl;
+        if (target.getHealth() > 0) {
+            cout << target.name << " still have " << target.getHealth() << " health" << endl;
+        } else {
+            cout << name << " defeated " << target.name << " by " << w_name << " in " << location << endl;
+        }
+    }
+};
+
+int main() {
+    string location, p1_name, p1_weapon, p2_name, p2_weapon;
+    int p1_health, p1_defense, p1_damage, p2_health, p2_defense, p2_damage;
+
+    cin >> location;
+    cin >> p1_name >> p1_health >> p1_defense >> p1_weapon >> p1_damage;
+    cin >> p2_name >> p2_health >> p2_defense >> p2_weapon >> p2_damage;
+
+    Player p1(location, p1_name, p1_health, p1_defense, p1_weapon, p1_damage);
+    Player p2(location, p2_name, p2_health, p2_defense, p2_weapon, p2_damage);
+
+    while (p1.getHealth() > 0 && p2.getHealth() > 0) {
+        p1.attack(p2);
+        cout<<endl;
+        if (p2.getHealth() > 0) {
+            p2.attack(p1);
+            cout<<endl;
+        }
+    }
+
+    return 0;
+}
+
