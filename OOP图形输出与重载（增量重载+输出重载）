@@ -1,0 +1,126 @@
+题目描述
+利用重载输入输出运算符和前（后）++以及前（后）--运算符完成Figure类的输出以及大小调整。
+对于每个Figure，只有一个参数size，表示矩阵的大小。我们重载输入运算符，接受输入的size。重载输出运算符，打印大小为size的方阵。
+对于每个操作，有如下解释：
+ADD：重载前++运算符，先完成size自增1，再进行打印
+add：重载后++运算符，先进行打印再，完成size自增1
+MINUS：重载前--运算符，先完成size自减1，再进行打印
+minus：重载后--运算符，先进行打印，再完成size自减1
+输入
+第一行为测试数据数，
+对于每组测试数据，第一行为初始size大小以及操作数个数。
+输出
+输出每次操作后的矩阵。每次操作间以空行分隔，每组测试数据之间要以“----------”分隔
+-----------------
+输入样例1 
+1
+5
+5
+ADD
+ADD
+add
+MINUS
+minus
+输出样例1
+******
+******
+******
+******
+******
+******
+
+*******
+*******
+*******
+*******
+*******
+*******
+*******
+
+*******
+*******
+*******
+*******
+*******
+*******
+*******
+
+*******
+*******
+*******
+*******
+*******
+*******
+*******
+
+*******
+*******
+*******
+*******
+*******
+*******
+*******
+
+----------
+
+语言: 
+C++
+AC代码：
+#include "bits/stdc++.h"
+using namespace std;
+
+class figure{
+    int size;
+public:
+    figure(){}
+    figure(int n){
+        size=n;
+    }
+    void display(){
+        for(int i=0;i<size;i++){
+            for(int j=0;j<size;j++){
+                cout<<"*";
+            }
+            cout<<endl;
+        }
+    }
+    void operator++(){
+        size++;
+        display();
+    }
+    void operator++(int){
+        display();
+        size++;
+    }
+    void operator--(){
+        size--;
+        display();
+    }
+    void operator--(int){
+        display();
+        size--;
+    }
+};
+int main(){
+    int t;
+    cin>>t;
+    while(t--){
+        int n;
+        cin>>n;
+        figure p(n);
+        int cishu;
+        cin>>cishu;
+        while(cishu--){
+                string s;
+                cin>>s;
+                if(s=="ADD"){
+                    ++p;
+                }
+                else if(s=="add") p++;
+                else if(s=="MINUS") --p;
+                else if(s=="minus") p--;
+                cout<<endl;
+            }
+            cout<<"----------"<<endl;
+        }
+    }
